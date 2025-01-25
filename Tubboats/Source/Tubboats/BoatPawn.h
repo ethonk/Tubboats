@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputMappingContext.h"
+#include "Boat/BoatCannonComponent.h"
 #include "GameFramework/Pawn.h" 
 
 #include "BoatPawn.generated.h"
@@ -17,6 +18,14 @@ private:
 	
 
 public:
+
+#pragma region Components
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UBoatCannonComponent* CannonComponent;
+
+#pragma endregion
+	
 	/// <summary>
 	/// Input Actions
 	/// </summary>
