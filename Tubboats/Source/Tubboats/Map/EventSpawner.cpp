@@ -25,7 +25,19 @@ void AEventSpawner::BeginPlay()
 
 void AEventSpawner::SpawnRandomEvent()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("SpawnRandomEvent"));
+	// Validate
+	if (SpawnableEvents.IsEmpty()) { return; }
+
+	// Get random event & location
+	const TSubclassOf<AEventBase> RandomEvent = SpawnableEvents[FMath::RandRange(0, SpawnableEvents.Num() - 1)];
+	const FVector RandomLocation = GetRandomSpawnLocation();
+
+	// Spawn event
+	AEventBase* NewEvent = GetWorld()->SpawnActor<AEventBase>(RandomEvent, RandomLocation, FRotator::ZeroRotator);
+	if (!NewEvent) { return; }
+
+	// Add to array
+	ActiveEvents.Add(NewEvent);
 }
 
 void AEventSpawner::StartSpawningEvents()
@@ -41,9 +53,17 @@ void AEventSpawner::StopSpawningEvents()
 	GetWorld()->GetTimerManager().ClearTimer(SpawnerTimerHandle);
 }
 
-// TODO implement
 void AEventSpawner::DestroyAllEvents()
 {
+	// Iterate destroy all events
+	for (AEventBase* Event : ActiveEvents)
+	{
+		if (!Event) { continue; }
+		Event->Destroy();
+	}
+
+	// Clear array
+	ActiveEvents.Empty();
 }
 
 #pragma endregion
