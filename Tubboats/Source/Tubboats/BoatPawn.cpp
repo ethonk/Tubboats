@@ -18,6 +18,7 @@ ABoatPawn::ABoatPawn()
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	MeshComp->SetSimulatePhysics(true);
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); 
 	MeshComp->SetMassOverrideInKg(NAME_None,50); 
 	
 	// attachment hierarchy
@@ -51,43 +52,48 @@ void ABoatPawn::BeginPlay()
 void ABoatPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// Speed
-	float fMaxSpeed = 15000;
-	FVector vWorldVelocity = MeshComp->GetPhysicsLinearVelocity(); 
-	fSpeed = FVector::DotProduct(GetActorForwardVector(), vWorldVelocity);   
-	fNormalisedSpeed = FMath::Clamp(FMath::Abs(fSpeed) / fMaxSpeed, 0.f, 1.f);
-	
-	// Steering  
-	float fSteeringAngle = 45;
-	fCurrentSteeringAngle = UKismetMathLibrary::MapRangeClamped(fInputAxisRight, -1, 1, fSteeringAngle*-1, fSteeringAngle);
-	
-	// Rotate
-	if (fInputAxisForward<0) fCurrentSteeringAngle = -fCurrentSteeringAngle; 
-	if (vWorldVelocity.SizeSquared() > 2) MeshComp->AddTorqueInDegrees(FVector(0,0,fCurrentSteeringAngle), NAME_None, true); 
+
 }
 
 void ABoatPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent); 
-
-	if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABoatPawn::Move);
-		UE_LOG(LogTemp, Warning, TEXT("MoveAction bound successfully!"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("EnhancedInputComponent not found!"));
-	}
+	Super::SetupPlayerInputComponent(PlayerInputComponent);  
 }
 
-void ABoatPawn::Move(const FInputActionValue& Value)
+void ABoatPawn::Move(const FVector2D& Value)
 {
-	FVector2d MovementVector = Value.Get<FVector2d>();
+	FVector2d MovementVector = Value;
 
 	fInputAxisForward = MovementVector.Y;
 	fInputAxisRight = MovementVector.X;
 
-	UE_LOG(LogTemp, Error, TEXT("MOVEEE!"));
+	if (MovementVector.Y != 0)
+	{
+		fInputAxisRight = 0;
+	}
+	
+	// // Speed
+	// float fMaxSpeed = 1000;
+	FVector vWorldVelocity = MeshComp->GetPhysicsLinearVelocity(); 
+	// fSpeed = FVector::DotProduct(GetActorForwardVector(), vWorldVelocity);   
+	// fNormalisedSpeed = FMath::Clamp(FMath::Abs(fSpeed) / fMaxSpeed, 0.f, 1.f);
+	
+	// Steering  
+	float fSteeringAngle = 45;
+	fCurrentSteeringAngle = UKismetMathLibrary::MapRangeClamped(fInputAxisRight, -1, 1, fSteeringAngle*-1, fSteeringAngle);
+
+	
+	// Rotate
+	if (fInputAxisForward<0) fCurrentSteeringAngle = -fCurrentSteeringAngle; 
+	// if (vWorldVelocity.SizeSquared() > 2)
+	MeshComp->AddTorqueInDegrees(FVector(0,0,fCurrentSteeringAngle * 4), NAME_None, true); 
+	
+	/* Acceleration */   
+	// float fAvailableTorque = fMaxSpeed; //AccelerationCurve->GetFloatValue(fNormalisedSpeed) * fInputAxisForward * fMaxSpeed * 1; 
+	// FVector vAccelerationForce = GetActorForwardVector() * fAvailableTorque;
+	// vAccelerationForce = UKismetMathLibrary::ProjectVectorOnToPlane(vAccelerationForce,FVector::UpVector); // project into ground
+	// FVector vForceLocation =  GetActorLocation() + FVector(0,0,-5) + GetActorForwardVector() * 10; 
+	// MeshComp->AddForceAtLocation(vAccelerationForce, GetActorLocation() ); 
+	MeshComp->AddForce(GetActorForwardVector() * 10000 * fInputAxisForward);
 } 
 

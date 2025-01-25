@@ -77,6 +77,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* MeshComp; 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurveFloat* AccelerationCurve; // determines acceleration  
 
 protected:
 	// Called when the game starts or when spawned
@@ -100,8 +103,9 @@ public:
 	// /// </summary> 
 	// virtual void PostInitializeComponents() override;   
 
-	// Called for movement input 
-	void Move(const FInputActionValue& Value);
+	// Called for movement input
+	UFUNCTION(BlueprintCallable)
+	void Move(const FVector2D& Value);
 	
 	/// <summary>
 	/// Getters
