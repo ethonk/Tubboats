@@ -94,6 +94,6 @@ void ABoatPawn::Move(const FVector2D& Value)
 	// vAccelerationForce = UKismetMathLibrary::ProjectVectorOnToPlane(vAccelerationForce,FVector::UpVector); // project into ground
 	// FVector vForceLocation =  GetActorLocation() + FVector(0,0,-5) + GetActorForwardVector() * 10; 
 	// MeshComp->AddForceAtLocation(vAccelerationForce, GetActorLocation() ); 
-	MeshComp->AddForce(GetActorForwardVector() * 10000 * fInputAxisForward);
+	MeshComp->AddForce(GetActorForwardVector() * 50000 * fInputAxisForward);
 } 
 
