@@ -89,7 +89,7 @@ void ATubboatsGameState::SpawnAllPlayers()
 		// Spawn player
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		GetWorld()->SpawnActor<ACharacter>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
+		GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
 	}
 }
 
