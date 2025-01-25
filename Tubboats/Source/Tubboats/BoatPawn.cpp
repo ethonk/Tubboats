@@ -85,7 +85,8 @@ void ABoatPawn::Move(const FVector2D& Value)
 	
 	// Rotate
 	if (fInputAxisForward<0) fCurrentSteeringAngle = -fCurrentSteeringAngle; 
-	if (vWorldVelocity.SizeSquared() > 2) MeshComp->AddTorqueInDegrees(FVector(0,0,fCurrentSteeringAngle * 4), NAME_None, true); 
+	// if (vWorldVelocity.SizeSquared() > 2)
+	MeshComp->AddTorqueInDegrees(FVector(0,0,fCurrentSteeringAngle * 4), NAME_None, true); 
 	
 	/* Acceleration */   
 	// float fAvailableTorque = fMaxSpeed; //AccelerationCurve->GetFloatValue(fNormalisedSpeed) * fInputAxisForward * fMaxSpeed * 1; 
@@ -93,6 +94,6 @@ void ABoatPawn::Move(const FVector2D& Value)
 	// vAccelerationForce = UKismetMathLibrary::ProjectVectorOnToPlane(vAccelerationForce,FVector::UpVector); // project into ground
 	// FVector vForceLocation =  GetActorLocation() + FVector(0,0,-5) + GetActorForwardVector() * 10; 
 	// MeshComp->AddForceAtLocation(vAccelerationForce, GetActorLocation() ); 
-	MeshComp->AddForce(GetActorForwardVector() * 100000 * fInputAxisForward);
+	MeshComp->AddForce(GetActorForwardVector() * 10000 * fInputAxisForward);
 } 
 
