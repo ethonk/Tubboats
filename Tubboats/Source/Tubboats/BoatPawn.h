@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+
+#include "../../../../../../../../Program Files/Epic Games/UE_5.2/Engine/Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h"
+
 #include "BoatPawn.generated.h"
 
 UCLASS()
@@ -16,6 +19,13 @@ private:
 
 public:
 	/// <summary>
+	/// Input Actions
+	/// </summary>
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* MoveAction;
+	
+	/// <summary>
 	/// Input variables
 	/// </summary>
 	
@@ -27,13 +37,7 @@ public:
 	/// <summary>
 	/// Movement checks
 	/// </summary>
-	 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bBreak{false}; 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bGrounded{false}; 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bDrift;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float fCurrentSteeringAngle;
 
@@ -47,17 +51,12 @@ public:
 	/// Normalised speed of the vehicle
 	/// </summary>
 	UPROPERTY(VisibleAnywhere)
-	float fNormalisedSpeed{0};
-	
-	/// <summary>
-	/// root component that simulates physics and collisions
-	/// </summary> 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UBoxComponent* BoxComp;
+	float fNormalisedSpeed{0}; 
 
 	/// <summary>
-	/// the appearance of the vehicle, should not have physics or collision 
-	/// </summary> 
+	/// Exposed Components
+	/// </summary>
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* MeshComp; 
 
@@ -68,7 +67,7 @@ protected:
 public:
 
 	// Sets default values for this pawn's properties
-	ABoatPawn();
+	ABoatPawn();  
 	
 	/// <summary>
 	/// Runs the update function for physics
@@ -77,15 +76,15 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+  
+	// /// <summary>
+	// /// Sets up components 
+	// /// </summary> 
+	// virtual void PostInitializeComponents() override;   
 
-	/// <summary>
-	/// Sets up components 
-	/// </summary> 
-	virtual void PostInitializeComponents() override;  
-
-	UFUNCTION(BlueprintCallable)
-	void AttachWheels();
-
+	// Called for movement input 
+	void Move(const FInputActionValue& Value);
+	
 	/// <summary>
 	/// Getters
 	/// </summary>
