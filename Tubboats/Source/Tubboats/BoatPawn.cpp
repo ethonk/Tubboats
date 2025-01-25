@@ -22,7 +22,6 @@ ABoatPawn::ABoatPawn()
 	
 	// attachment hierarchy
 	RootComponent = MeshComp;
-
 }
 
 // Called when the game starts or when spawned

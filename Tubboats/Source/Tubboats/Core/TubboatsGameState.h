@@ -67,6 +67,10 @@ public:
 
 	void SpawnAllPlayers();
 
+	void DestroyAllPlayers();
+
+	void PlayerDied(APawn* DyingPlayer);
+
 #pragma endregion
 
 #pragma region Helpers
@@ -86,7 +90,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetCurrentRemainingTime() const;
-
+	
 #pragma endregion
 	
 	//
@@ -100,6 +104,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States")
 	ETubboatGameState CurrentGameState = ETubboatGameState::Menu;
 
+	// Player
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States|Player")
+	TArray<APawn*> ActivePlayers;
+	
 	// Game Objects
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States|InGame")
