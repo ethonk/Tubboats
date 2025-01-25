@@ -38,7 +38,7 @@ public:
 	void ResetFire();
 
 #pragma endregion
-
+	
 #pragma region Setters
 
 	UFUNCTION(BlueprintCallable)
