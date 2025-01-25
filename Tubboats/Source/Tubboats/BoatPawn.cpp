@@ -53,6 +53,7 @@ void ABoatPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
 }
 
 void ABoatPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -67,11 +68,6 @@ void ABoatPawn::Move(const FVector2D& Value)
 	fInputAxisForward = MovementVector.Y;
 	fInputAxisRight = MovementVector.X;
 
-	if (MovementVector.Y != 0)
-	{
-		fInputAxisRight = 0;
-	}
-	
 	// // Speed
 	// float fMaxSpeed = 1000;
 	FVector vWorldVelocity = MeshComp->GetPhysicsLinearVelocity(); 
@@ -95,5 +91,7 @@ void ABoatPawn::Move(const FVector2D& Value)
 	// FVector vForceLocation =  GetActorLocation() + FVector(0,0,-5) + GetActorForwardVector() * 10; 
 	// MeshComp->AddForceAtLocation(vAccelerationForce, GetActorLocation() ); 
 	MeshComp->AddForce(GetActorForwardVector() * 50000 * fInputAxisForward);
+	
+
 } 
 
