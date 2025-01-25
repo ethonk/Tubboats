@@ -15,6 +15,11 @@ APickupSpawner::APickupSpawner()
 	RootComponent = SpawnExtents;
 }
 
+void APickupSpawner::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 #pragma endregion
 
 #pragma region Spawning
@@ -32,8 +37,9 @@ void APickupSpawner::SpawnRandomPickup()
 	APickupBase* NewPickup = GetWorld()->SpawnActor<APickupBase>(RandomPickup, RandomLocation, FRotator::ZeroRotator);
 	if (!NewPickup) { return; }
 
-	// Add to array
+	// Add to array and subscribe to destroyed
 	SpawnedPickups.Add(NewPickup);
+	NewPickup->OnPickupDestroyed.AddDynamic(this, &APickupSpawner::OnPickupDestroyed);
 }
 
 void APickupSpawner::StartSpawning()
@@ -47,6 +53,36 @@ void APickupSpawner::StopSpawning()
 {
 	// Stop Timer
 	GetWorld()->GetTimerManager().ClearTimer(SpawnerTimerHandle);
+}
+
+void APickupSpawner::OnPickupDestroyed(APickupBase* Pickup)
+{
+	// Remove from array
+	SpawnedPickups.Remove(Pickup);
+
+	// Clean array
+	for (int i = SpawnedPickups.Num() - 1; i >= 0; --i)
+	{
+		if (!SpawnedPickups[i]) { SpawnedPickups.RemoveAt(i); }
+	}
+}
+
+void APickupSpawner::DestroyAllPickups()
+{
+	// Reverse iterate, destroy and remove
+	for (int i = SpawnedPickups.Num() - 1; i >= 0; --i)
+	{
+		if (!SpawnedPickups[i]) { return; }
+		
+		// unsubscribe all from destroyed if bound
+		if (SpawnedPickups[i]->OnPickupDestroyed.IsBound()) { SpawnedPickups[i]->OnPickupDestroyed.Clear(); }
+		
+		// destroy
+		SpawnedPickups[i]->Destroy();
+	}
+
+	// Safety, clear array
+	SpawnedPickups.Empty();
 }
 
 #pragma endregion

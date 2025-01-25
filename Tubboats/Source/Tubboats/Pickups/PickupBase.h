@@ -7,6 +7,9 @@
 #include "GameFramework/Actor.h"
 #include "PickupBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPickupDestroyed, APickupBase*, Pickup);
+
+
 UCLASS()
 class TUBBOATS_API APickupBase : public AActor
 {
@@ -16,10 +19,11 @@ public:
 
 #pragma region Core
 	
-
 	APickupBase();
 
 	virtual void BeginPlay() override;
+
+	virtual void Destroyed() override;
 	
 #pragma endregion
 
@@ -33,6 +37,8 @@ public:
 
 #pragma region Pickup Functions
 
+	void Despawn();
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnPickup(AActor* OtherActor);
 
@@ -42,6 +48,13 @@ public:
 	//
 	//
 
+#pragma region Delegates
+
+	UPROPERTY(BlueprintAssignable)
+	FPickupDestroyed OnPickupDestroyed;
+	
+#pragma endregion
+	
 #pragma region Components
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -49,6 +62,20 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* PickupMesh = nullptr;
+
+#pragma endregion
+
+#pragma region States
+
+	UPROPERTY(Transient)
+	FTimerHandle DespawnTimerHandle;
+
+#pragma endregion
+
+#pragma region Properties
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Spawning")
+	float DespawnDelay = 13.f;
 
 #pragma endregion
 
