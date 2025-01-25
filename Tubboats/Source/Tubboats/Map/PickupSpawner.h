@@ -19,6 +19,8 @@ public:
 
 	APickupSpawner();
 
+	virtual void BeginPlay() override;
+	
 #pragma endregion
 
 #pragma region Spawning
@@ -30,6 +32,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StopSpawning();
+
+	UFUNCTION()
+	void OnPickupDestroyed(APickupBase* Pickup);
+
+	UFUNCTION(BlueprintCallable)
+	void DestroyAllPickups();
 
 #pragma endregion
 
@@ -74,7 +82,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Spawning")
 	float SpawnDelay = 5.f;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Spawning")
 	int32 MaxSpawnedPickups = 10;
 	

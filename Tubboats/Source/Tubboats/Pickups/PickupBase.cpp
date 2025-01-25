@@ -29,11 +29,21 @@ APickupBase::APickupBase()
 	PickupCollision->OnComponentBeginOverlap.AddDynamic(this, &APickupBase::OnPickupOverlap);
 }
 
-// Called when the game starts or when spawned
 void APickupBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Despawn Timer
+	GetWorld()->GetTimerManager().SetTimer(DespawnTimerHandle, this, &APickupBase::Despawn,
+		DespawnDelay, false);
+}
+
+void APickupBase::Destroyed()
+{
+	Super::Destroyed();
+
+	OnPickupDestroyed.Broadcast(this);
+	OnPickupDestroyed.Clear();
 }
 
 #pragma endregion
@@ -50,6 +60,15 @@ void APickupBase::OnPickupOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	BP_OnPickup(OtherActor);
 
 	// Destroy
+	Destroy();
+}
+
+#pragma endregion
+
+#pragma region Pickup Functions
+
+void APickupBase::Despawn()
+{
 	Destroy();
 }
 
