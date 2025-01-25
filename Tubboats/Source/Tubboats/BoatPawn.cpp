@@ -30,7 +30,7 @@ void ABoatPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EnableInput(GetWorld()->GetFirstPlayerController());
+	// EnableInput(GetWorld()->GetFirstPlayerController());
 	
 	// Get the PlayerController and add the input mapping context
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
