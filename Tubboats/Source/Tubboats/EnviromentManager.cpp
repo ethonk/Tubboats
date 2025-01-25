@@ -16,20 +16,21 @@ AEnviromentManager::AEnviromentManager()
 
 	PostProcessComp = CreateDefaultSubobject<UPostProcessComponent>(TEXT("PostProcessComp"));
 
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
-	SpringArm->TargetArmLength = 2000.0f;
-	SpringArm->bInheritYaw = false;
-	SpringArm->bInheritPitch = false;
-	SpringArm->bInheritRoll = false;
-	SpringArm->bDoCollisionTest = false;
-
-	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	CameraComp->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-
-	// attachment hierarchy
-	SpringArm->SetupAttachment(RootComponent);
-	CameraComp->SetupAttachment(SpringArm); 
+	// SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	// SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+	// SpringArm->TargetArmLength = 2000.0f;
+	// SpringArm->bInheritYaw = false;
+	// SpringArm->bInheritPitch = false;
+	// SpringArm->bInheritRoll = false;
+	// SpringArm->bDoCollisionTest = false;
+// 
+	// CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	// CameraComp->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+// 
+	// // attachment hierarchy
+	RootComponent = PostProcessComp;
+	// SpringArm->SetupAttachment(RootComponent);
+	// CameraComp->SetupAttachment(SpringArm); 
 	PostProcessComp->SetupAttachment(RootComponent);
 }
 
