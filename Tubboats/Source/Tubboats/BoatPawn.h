@@ -59,17 +59,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float fCurrentSteeringAngle;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float fSteeringAngle = 30;
+	
 	/// <summary>
 	/// Speed of the vehicle
 	/// </summary>
 	UPROPERTY(VisibleAnywhere)
 	float fSpeed{0};
 
-	/// <summary>
-	/// Normalised speed of the vehicle
-	/// </summary>
 	UPROPERTY(VisibleAnywhere)
-	float fNormalisedSpeed{0}; 
+	float fBaseAcceleration{60000};
+
+	// /// <summary>
+	// /// Normalised speed of the vehicle
+	// /// </summary>
+	// UPROPERTY(VisibleAnywhere)
+	// float fNormalisedSpeed{0}; 
 
 	/// <summary>
 	/// Exposed Components
@@ -78,8 +84,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* MeshComp; 
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCurveFloat* AccelerationCurve; // determines acceleration  
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// UCurveFloat* AccelerationCurve; // determines acceleration  
 
 protected:
 	// Called when the game starts or when spawned
@@ -93,12 +99,8 @@ public:
 	// Called for movement input
 	UFUNCTION(BlueprintCallable)
 	void Move(const FVector2D& Value);
-	
-	/// <summary>
-	/// Getters
-	/// </summary>
 
 	UFUNCTION(BlueprintCallable)
-	float GetNormalisedSpeed() const { return fNormalisedSpeed; }
+	void SetSpeedAndSteering(float Speed, float Steering); 
 
 };

@@ -72,8 +72,7 @@ void ABoatPawn::Move(const FVector2D& Value)
 	FVector vWorldVelocity = MeshComp->GetPhysicsLinearVelocity(); 
 	fSpeed = FVector::DotProduct(GetActorForwardVector(), vWorldVelocity);  
 	
-	// Steering  
-	float fSteeringAngle = 45;
+	// Steering   
 	fCurrentSteeringAngle = UKismetMathLibrary::MapRangeClamped(fInputAxisRight, -1, 1, fSteeringAngle*-1, fSteeringAngle); 
 	
 	// Torque
@@ -85,10 +84,16 @@ void ABoatPawn::Move(const FVector2D& Value)
 	if ((fInputAxisForward < 0 && fSpeed > 0) ^ (fInputAxisForward > 0 &&  fSpeed < 0 )) BrakeForce = (vWorldVelocity * -1) * 1000;  
 	
 	// Acceleration
-	float AccelerationConst = fInputAxisForward > 0 ? 80000 : 50000;
+	float AccelerationConst = fInputAxisForward > 0 ? fBaseAcceleration : 50000;
 	FVector vForceLocation =  GetActorLocation() + FVector(0,0,-5) + GetActorForwardVector() * 10; 
 	MeshComp->AddForceAtLocation(GetActorForwardVector() * AccelerationConst * fInputAxisForward + BrakeForce, vForceLocation );
 
 	 
+}
+
+void ABoatPawn::SetSpeedAndSteering(float Speed, float Steering)
+{
+	fBaseAcceleration = Speed;
+	fSteeringAngle = Steering;
 } 
 
