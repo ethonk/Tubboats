@@ -29,9 +29,12 @@ struct FGameStateMessage
 {
 	GENERATED_BODY()
 
+	FGameStateMessage() :
+		GameState(ETubboatGameState::Menu)
+	{}
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameStateMessage")
 	ETubboatGameState GameState;
-	
 };
 
 #pragma endregion
