@@ -14,6 +14,7 @@ public class Tubboats : ModuleRules
 			"CoreUObject", 
 			"Engine", 
 			"EnhancedInput",
+			// "Water",
 			"InputCore",
 			"GameplayTags"
 		});

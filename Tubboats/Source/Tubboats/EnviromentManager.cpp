@@ -44,7 +44,7 @@ void AEnviromentManager::BeginPlay()
 	PPSettings.bOverride_DepthOfFieldFocalDistance = true;
 	PPSettings.DepthOfFieldFstop = 0.2;
 	PPSettings.DepthOfFieldSensorWidth = 144;
-	PPSettings.DepthOfFieldFocalDistance = 2000; 
+	PPSettings.DepthOfFieldFocalDistance = 9000; 
 	PostProcessComp->Settings = PPSettings; 
 	
     // FViewTargetTransitionParams TransitionParams;
