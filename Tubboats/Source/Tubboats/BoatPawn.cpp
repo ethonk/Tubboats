@@ -47,12 +47,7 @@ void ABoatPawn::BeginPlay()
 			}
 		}
 	}
-} 
-
-void ABoatPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);  
-}
+}  
 
 void ABoatPawn::Move(const FVector2D& Value)
 {

@@ -88,10 +88,7 @@ protected:
 public:
 
 	// Sets default values for this pawn's properties
-	ABoatPawn();   
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	ABoatPawn();    
   
 	// /// <summary>
 	// /// Sets up components 
