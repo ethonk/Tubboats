@@ -109,11 +109,12 @@ void ATubboatsGameState::SpawnAllPlayers()
 
 void ATubboatsGameState::DestroyAllPlayers()
 {
-	for (APawn* InPlayer : ActivePlayers)
-	{
-		if (!InPlayer) { continue; }
-		InPlayer->Destroy();
-	}
+	ActivePlayers.Empty();
+	
+	// Find all BoatPawns and destroy them
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABoatPawn::StaticClass(), FoundActors);
+	for (AActor* Actor : FoundActors) { Actor->Destroy(); }
 }
 
 void ATubboatsGameState::PlayerDied(APawn* DyingPlayer)
@@ -122,6 +123,12 @@ void ATubboatsGameState::PlayerDied(APawn* DyingPlayer)
 
 	// Remove from active players
 	ActivePlayers.Remove(DyingPlayer);
+
+	// Do a funny (add random impulse to player pawn mostly going high)
+	if (const ABoatPawn* DyingBoat = Cast<ABoatPawn>(DyingPlayer))
+	{
+		DyingBoat->MeshComp->AddImpulse(FVector(0.f, 0.f, 7000.f), NAME_None, true);
+	}
 
 	// Check if one player remains
 	if (ActivePlayers.Num() <= 1 && CurrentGameState == ETubboatGameState::Gameplay)

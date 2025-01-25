@@ -23,6 +23,7 @@ public:
 
 #pragma region Bubble Management
 
+	UFUNCTION()
 	void BubbleActivityChanged(const bool bLastWasActive);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Bubble Management")
