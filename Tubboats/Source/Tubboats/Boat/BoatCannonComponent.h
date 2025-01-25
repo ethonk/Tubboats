@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Tubboats/Arsenal/PlayerOwnedActor.h"
 #include "BoatCannonComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
 class TUBBOATS_API UBoatCannonComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -24,7 +25,7 @@ public:
 
 #pragma region Firing
 
-	void FireAt(const FVector& FireLocation);
+	void FireAt(const FVector& FireLocation, const FRotator& OffsetRotation);
 
 	UFUNCTION(BlueprintCallable)
 	void FireLeft();
@@ -50,11 +51,18 @@ public:
 	
 #pragma region Properties
 
+	// Cannon
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Properties|Cannon")
-	FString LeftFirePointTag = "FirePoint_L";
+	FName LeftFirePointTag = "FirePoint_L";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Properties|Cannon")
-	FString RightFirePointTag = "FirePoint_R";
+	FName RightFirePointTag = "FirePoint_R";
+
+	// Firing
+
+	UPROPERTY(EditDefaultsOnly, Category = "Properties|Firing")
+	TSubclassOf<APlayerOwnedActor> NeedleProjectileClass = nullptr;
 
 #pragma endregion
 	

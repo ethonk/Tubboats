@@ -18,11 +18,15 @@ void UBoatCannonComponent::BeginPlay()
 	// Check Owner
 	if (!GetOwner()) { return; }
 
-	// Get Fire Points
-	FirePointLeft = GetOwner()->FindComponentByClass<USceneComponent>();
-	FirePointRight = GetOwner()->FindComponentByClass<USceneComponent>();
+	// Get Left Fire Point
+	TArray<UActorComponent*> TaggedLeftComponents = GetOwner()->GetComponentsByTag(USceneComponent::StaticClass(), LeftFirePointTag);
+	if (!TaggedLeftComponents.IsEmpty()) { FirePointLeft = Cast<USceneComponent>(TaggedLeftComponents[0]); }
 
-	// TODO Log
+	// Get Right Fire Point
+	TArray<UActorComponent*> TaggedRightComponents = GetOwner()->GetComponentsByTag(USceneComponent::StaticClass(), RightFirePointTag);
+	if (!TaggedRightComponents.IsEmpty()) { FirePointRight = Cast<USceneComponent>(TaggedRightComponents[0]); }
+
+	// TODO Validate Fire Points
 	if (!FirePointLeft || !FirePointRight)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Fire Points not found!"));
@@ -37,23 +41,45 @@ void UBoatCannonComponent::BeginPlay()
 
 #pragma region Firing
 
-void UBoatCannonComponent::FireAt(const FVector& FireLocation)
+void UBoatCannonComponent::FireAt(const FVector& FireLocation, const FRotator& OffsetRotation)
 {
-	// Debug point to fire at
-	DrawDebugPoint(GetWorld(), FireLocation, 10, FColor::Yellow, true);
-	UE_LOG(LogTemp, Warning, TEXT("She gets 5 big booms at %s"), *FireLocation.ToString());
+	if (!GetOwner() || !NeedleProjectileClass) { return; }
+
+	// Make Spawn Transform
+
+	// Spawn the Needle
+	const FTransform FireTransform = FTransform(OffsetRotation, FireLocation);
+	APlayerOwnedActor* NewNeedle = GetWorld()->SpawnActor<APlayerOwnedActor>(NeedleProjectileClass, FireTransform);
+	if (!NewNeedle) { return; }
+
+	// Setup Needle
+	NewNeedle->Initialize(Cast<APawn>(GetOwner()));
 }
 
 void UBoatCannonComponent::FireLeft()
 {
 	if (!FirePointLeft) { return; }
-	FireAt(FirePointLeft->GetComponentLocation());
+
+	// Get actor rotation and zero out pitch and roll
+	FRotator FireRotation = FirePointLeft->GetComponentRotation();
+	FireRotation.Pitch = 0;
+	FireRotation.Roll = 0;
+
+	// Fire
+	FireAt(FirePointLeft->GetComponentLocation(), FireRotation);
 }
 
 void UBoatCannonComponent::FireRight()
 {
 	if (!FirePointRight) { return; }
-	FireAt(FirePointRight->GetComponentLocation());
+
+	// Get actor rotation and zero out pitch and roll
+	FRotator FireRotation = FirePointRight->GetComponentRotation();
+	FireRotation.Pitch = 0;
+	FireRotation.Roll = 0;
+
+	// Fire
+	FireAt(FirePointRight->GetComponentLocation(), FireRotation);
 }
 
 #pragma endregion
