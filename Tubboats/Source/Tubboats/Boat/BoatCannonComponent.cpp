@@ -34,3 +34,26 @@ void UBoatCannonComponent::BeginPlay()
 }
 
 #pragma endregion
+
+#pragma region Firing
+
+void UBoatCannonComponent::FireAt(const FVector& FireLocation)
+{
+	// Debug point to fire at
+	DrawDebugPoint(GetWorld(), FireLocation, 10, FColor::Yellow, true);
+	UE_LOG(LogTemp, Warning, TEXT("She gets 5 big booms at %s"), *FireLocation.ToString());
+}
+
+void UBoatCannonComponent::FireLeft()
+{
+	if (!FirePointLeft) { return; }
+	FireAt(FirePointLeft->GetComponentLocation());
+}
+
+void UBoatCannonComponent::FireRight()
+{
+	if (!FirePointRight) { return; }
+	FireAt(FirePointRight->GetComponentLocation());
+}
+
+#pragma endregion

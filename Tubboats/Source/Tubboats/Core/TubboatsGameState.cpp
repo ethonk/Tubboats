@@ -100,6 +100,10 @@ void ATubboatsGameState::SpawnAllPlayers()
 
 		// Add to active players
 		ActivePlayers.Add(NewPlayer);
+
+		// Possess by first player controller
+		APlayerController* FirstPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (FirstPlayerController) { FirstPlayerController->Possess(NewPlayer); }
 	}
 }
 
