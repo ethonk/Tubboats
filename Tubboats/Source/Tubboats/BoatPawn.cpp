@@ -19,7 +19,8 @@ ABoatPawn::ABoatPawn()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	MeshComp->SetSimulatePhysics(true);
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); 
-	MeshComp->SetMassOverrideInKg(NAME_None,50); 
+	MeshComp->SetMassOverrideInKg(NAME_None,50);
+	MeshComp->SetCenterOfMass({0,0,-15});
 	
 	// attachment hierarchy
 	RootComponent = MeshComp;
@@ -46,15 +47,7 @@ void ABoatPawn::BeginPlay()
 			}
 		}
 	}
-}
-
-// Called every frame
-void ABoatPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-
-}
+} 
 
 void ABoatPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -66,32 +59,29 @@ void ABoatPawn::Move(const FVector2D& Value)
 	FVector2d MovementVector = Value;
 
 	fInputAxisForward = MovementVector.Y;
-	fInputAxisRight = MovementVector.X;
+	fInputAxisRight = MovementVector.X; 
 
-	// // Speed
-	// float fMaxSpeed = 1000;
+	// Speed
 	FVector vWorldVelocity = MeshComp->GetPhysicsLinearVelocity(); 
-	// fSpeed = FVector::DotProduct(GetActorForwardVector(), vWorldVelocity);   
-	// fNormalisedSpeed = FMath::Clamp(FMath::Abs(fSpeed) / fMaxSpeed, 0.f, 1.f);
+	fSpeed = FVector::DotProduct(GetActorForwardVector(), vWorldVelocity);  
 	
 	// Steering  
 	float fSteeringAngle = 45;
-	fCurrentSteeringAngle = UKismetMathLibrary::MapRangeClamped(fInputAxisRight, -1, 1, fSteeringAngle*-1, fSteeringAngle);
-
+	fCurrentSteeringAngle = UKismetMathLibrary::MapRangeClamped(fInputAxisRight, -1, 1, fSteeringAngle*-1, fSteeringAngle); 
 	
-	// Rotate
-	if (fInputAxisForward<0) fCurrentSteeringAngle = -fCurrentSteeringAngle; 
-	// if (vWorldVelocity.SizeSquared() > 2)
+	// Torque
+	if (fInputAxisForward<0) fCurrentSteeringAngle = -fCurrentSteeringAngle;  
 	MeshComp->AddTorqueInDegrees(FVector(0,0,fCurrentSteeringAngle * 4), NAME_None, true); 
 	
-	/* Acceleration */   
-	// float fAvailableTorque = fMaxSpeed; //AccelerationCurve->GetFloatValue(fNormalisedSpeed) * fInputAxisForward * fMaxSpeed * 1; 
-	// FVector vAccelerationForce = GetActorForwardVector() * fAvailableTorque;
-	// vAccelerationForce = UKismetMathLibrary::ProjectVectorOnToPlane(vAccelerationForce,FVector::UpVector); // project into ground
-	// FVector vForceLocation =  GetActorLocation() + FVector(0,0,-5) + GetActorForwardVector() * 10; 
-	// MeshComp->AddForceAtLocation(vAccelerationForce, GetActorLocation() ); 
-	MeshComp->AddForce(GetActorForwardVector() * 50000 * fInputAxisForward);
+	// Brake
+	FVector BrakeForce = FVector::ZeroVector;
+	if ((fInputAxisForward < 0 && fSpeed > 0) ^ (fInputAxisForward > 0 &&  fSpeed < 0 )) BrakeForce = (vWorldVelocity * -1) * 1000;  
 	
+	// Acceleration
+	float AccelerationConst = fInputAxisForward > 0 ? 80000 : 50000;
+	FVector vForceLocation =  GetActorLocation() + FVector(0,0,-5) + GetActorForwardVector() * 10; 
+	MeshComp->AddForceAtLocation(GetActorForwardVector() * AccelerationConst * fInputAxisForward + BrakeForce, vForceLocation );
 
+	 
 } 
 

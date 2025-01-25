@@ -88,12 +88,7 @@ protected:
 public:
 
 	// Sets default values for this pawn's properties
-	ABoatPawn();  
-	
-	/// <summary>
-	/// Runs the update function for physics
-	/// </summary> 
-	virtual void Tick(float DeltaTime) override;
+	ABoatPawn();   
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
