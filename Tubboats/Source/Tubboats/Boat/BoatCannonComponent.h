@@ -86,23 +86,23 @@ public:
 
 	// Stats
 
-	UPROPERTY(EditDefaultsOnly, Category = "Properties|Stats")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Stats")
 	float FireCooldown = 1.f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Properties|Stats")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Stats")
 	int32 MaxAmmo = 5;
 	
 	// Cannon
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Properties|Cannon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Cannon")
 	FName LeftFirePointTag = "FirePoint_L";
 
-	UPROPERTY(EditDefaultsOnly, Category = "Properties|Cannon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Cannon")
 	FName RightFirePointTag = "FirePoint_R";
 
 	// Firing
 
-	UPROPERTY(EditDefaultsOnly, Category = "Properties|Firing")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Firing")
 	TSubclassOf<APlayerOwnedActor> NeedleProjectileClass = nullptr;
 
 #pragma endregion
