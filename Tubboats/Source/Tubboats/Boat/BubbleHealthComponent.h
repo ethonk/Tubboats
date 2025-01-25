@@ -26,6 +26,9 @@ public:
 	UFUNCTION()
 	void BubbleActivityChanged(const bool bLastWasActive);
 
+	UFUNCTION(BlueprintCallable)
+	void RestoreClosestBubble(const FVector& Location);
+	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Bubble Management")
 	void BP_AllBubblesPopped();
 
