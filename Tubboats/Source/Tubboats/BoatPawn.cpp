@@ -2,6 +2,8 @@
 
 // core
 #include "BoatPawn.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 
 
@@ -53,5 +55,21 @@ void ABoatPawn::Tick(float DeltaTime)
 	// Rotate
 	if (fInputAxisForward<0) fCurrentSteeringAngle = -fCurrentSteeringAngle; 
 	if (vWorldVelocity.SizeSquared() > 2) MeshComp->AddTorqueInDegrees(FVector(0,0,fCurrentSteeringAngle), NAME_None, true); 
-}  
+}
+
+void ABoatPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+ 
+}
+
+void ABoatPawn::Move(const FVector2D& Value)
+{
+	FVector2d MovementVector = Value;
+
+	fInputAxisForward = MovementVector.Y;
+	fInputAxisRight = MovementVector.X;
+
+	UE_LOG(LogTemp, Error, TEXT("MOVEEE!"));
+	
+} 
 

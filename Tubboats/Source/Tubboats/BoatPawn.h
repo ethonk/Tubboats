@@ -39,7 +39,8 @@ public:
 	/// <summary>
 	/// Input variables
 	/// </summary>
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurveFloat* AccelerationCurve; // determines acceleration  
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float fInputAxisForward; 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -93,8 +94,9 @@ public:
 	// /// </summary> 
 	// virtual void PostInitializeComponents() override;   
 
-	// Called for movement input 
-	void Move(const FInputActionValue& Value);
+	// Called for movement input
+	UFUNCTION(BlueprintCallable)
+	void Move(const FVector2D& Value);
 	
 	/// <summary>
 	/// Getters
