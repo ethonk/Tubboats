@@ -25,6 +25,13 @@ public:
 	UBoatCannonComponent* CannonComponent;
 
 #pragma endregion
+
+#pragma region States
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "States")
+	int PlayerIndex = 0;
+
+#pragma endregion
 	
 	/// <summary>
 	/// Input Actions
