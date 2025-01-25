@@ -15,8 +15,7 @@ APickupBase::APickupBase()
 	RootComponent = PickupCollision;
 	//	- overlap only
 	PickupCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	PickupCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
-	PickupCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	PickupCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
 	//	- starting radius
 	PickupCollision->SetSphereRadius(400.0f);
 
@@ -56,8 +55,12 @@ void APickupBase::OnPickupOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	// Check other actor is boat pawn
 	if (!OtherActor || !OtherActor->IsA(ABoatPawn::StaticClass())) { return; }
 
+	// Cast to boat pawn
+	ABoatPawn* BoatPawn = Cast<ABoatPawn>(OtherActor);
+	if (!BoatPawn) { return; }
+	
 	// Call Collision
-	BP_OnPickup(OtherActor);
+	BP_OnPickup(BoatPawn);
 
 	// Destroy
 	Destroy();

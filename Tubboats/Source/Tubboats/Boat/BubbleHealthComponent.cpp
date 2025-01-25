@@ -45,4 +45,33 @@ void UBubbleHealthComponent::BubbleActivityChanged(const bool bLastWasActive)
 	BP_AllBubblesPopped();
 }
 
+void UBubbleHealthComponent::RestoreClosestBubble(const FVector& Location)
+{
+	// Get all bubbles that are not active
+	TArray<APlayerBubble*> InactiveBubbles;
+	for (APlayerBubble* Bubble : PlayerBubbles) { if (Bubble && !Bubble->bActivated) { InactiveBubbles.Add(Bubble); } }
+
+	// If no inactive bubbles, return
+	if (InactiveBubbles.Num() == 0) { return; }
+
+	// Find the closest bubble
+	APlayerBubble* ClosestBubble = nullptr;
+	float ClosestDistance = TNumericLimits<float>::Max();
+	for (APlayerBubble* Bubble : InactiveBubbles)
+	{
+		const float Distance = FVector::Dist(Bubble->GetActorLocation(), Location);
+		if (Distance < ClosestDistance)
+		{
+			ClosestBubble = Bubble;
+			ClosestDistance = Distance;
+		}
+	}
+
+	// Validate
+	if (!ClosestBubble) { return; }
+
+	// Activate the closest bubble
+	ClosestBubble->SetActivated(true);
+}
+
 #pragma endregion

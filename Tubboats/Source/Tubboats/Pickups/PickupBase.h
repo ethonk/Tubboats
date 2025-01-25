@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "PickupBase.generated.h"
 
+class ABoatPawn;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPickupDestroyed, APickupBase*, Pickup);
 
 
@@ -40,7 +41,7 @@ public:
 	void Despawn();
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void BP_OnPickup(AActor* OtherActor);
+	void BP_OnPickup(ABoatPawn* OtherActor);
 
 #pragma endregion
 	
