@@ -12,7 +12,7 @@ public class Tubboats : ModuleRules
 		{
 			"Core", 
 			"CoreUObject", 
-			"Engine", 
+			"Engine",  
 			"EnhancedInput",
 			"InputCore",
 			"GameplayTags"
