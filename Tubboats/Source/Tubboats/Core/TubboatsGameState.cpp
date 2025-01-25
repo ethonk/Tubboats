@@ -4,6 +4,7 @@
 #include "TubboatsGameState.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Tubboats/BoatPawn.h"
 
 
 #pragma region Core
@@ -98,12 +99,11 @@ void ATubboatsGameState::SpawnAllPlayers()
 		APawn* NewPlayer = GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
 		if (!NewPlayer) { continue; }
 
+		// Set index of Boat Pawn
+		if (ABoatPawn* NewBoat = Cast<ABoatPawn>(NewPlayer)) { NewBoat->PlayerIndex = ActivePlayers.Num(); }
+		
 		// Add to active players
 		ActivePlayers.Add(NewPlayer);
-
-		// Possess by first player controller
-		APlayerController* FirstPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (FirstPlayerController) { FirstPlayerController->Possess(NewPlayer); }
 	}
 }
 
