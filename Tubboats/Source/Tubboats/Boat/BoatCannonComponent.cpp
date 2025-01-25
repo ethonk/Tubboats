@@ -45,12 +45,13 @@ void UBoatCannonComponent::FireAt(const FVector& FireLocation, const FRotator& O
 {
 	if (!GetOwner() || !NeedleProjectileClass) { return; }
 
-	// Make Spawn Transform
-
 	// Spawn the Needle
 	const FTransform FireTransform = FTransform(OffsetRotation, FireLocation);
 	APlayerOwnedActor* NewNeedle = GetWorld()->SpawnActor<APlayerOwnedActor>(NeedleProjectileClass, FireTransform);
 	if (!NewNeedle) { return; }
+
+	const FString& Rotator = OffsetRotation.ToString();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rotator: %s"), *Rotator));
 
 	// Setup Needle
 	NewNeedle->Initialize(Cast<APawn>(GetOwner()));

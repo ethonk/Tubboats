@@ -69,6 +69,7 @@ public:
 
 	void DestroyAllPlayers();
 
+	UFUNCTION(BlueprintCallable)
 	void PlayerDied(APawn* DyingPlayer);
 
 #pragma endregion
