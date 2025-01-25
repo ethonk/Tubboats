@@ -64,15 +64,19 @@ void ATubboatsGameState::ExitCurrentGameState()
 	switch (CurrentGameState)
 	{
 	case ETubboatGameState::PreGame:
+		
 		SetCurrentGameState(ETubboatGameState::Gameplay);
 		break;
 
 	case ETubboatGameState::Gameplay:
+		
 		SetCurrentGameState(ETubboatGameState::GameEnd);
 		break;
 
 	case ETubboatGameState::GameEnd:
+		DestroyAllPlayers();
 		SetCurrentGameState(ETubboatGameState::Menu);
+		
 		break;
 		
 	default:
@@ -89,7 +93,40 @@ void ATubboatsGameState::SpawnAllPlayers()
 		// Spawn player
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
+
+		// Catalogue Player
+		APawn* NewPlayer = GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
+		if (!NewPlayer) { continue; }
+
+		// Add to active players
+		ActivePlayers.Add(NewPlayer);
+
+		// Possess by first player controller
+		APlayerController* FirstPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (FirstPlayerController) { FirstPlayerController->Possess(NewPlayer); }
+	}
+}
+
+void ATubboatsGameState::DestroyAllPlayers()
+{
+	for (APawn* InPlayer : ActivePlayers)
+	{
+		if (!InPlayer) { continue; }
+		InPlayer->Destroy();
+	}
+}
+
+void ATubboatsGameState::PlayerDied(APawn* DyingPlayer)
+{
+	if (!DyingPlayer) { return; }
+
+	// Remove from active players
+	ActivePlayers.Remove(DyingPlayer);
+
+	// Check if one player remains
+	if (ActivePlayers.Num() <= 1 && CurrentGameState == ETubboatGameState::Gameplay)
+	{
+		SetCurrentGameState(ETubboatGameState::GameEnd);
 	}
 }
 

@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
+#include "InputMappingContext.h"
+#include "Boat/BoatCannonComponent.h"
 #include "GameFramework/Pawn.h" 
 
 #include "BoatPawn.generated.h"
@@ -17,8 +18,23 @@ private:
 	
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCurveFloat* AccelerationCurve; // determines acceleration   
+
+#pragma region Components
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UBoatCannonComponent* CannonComponent;
+
+#pragma endregion
+	
+	/// <summary>
+	/// Input Actions
+	/// </summary>
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> InputMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* MoveAction;
 	
 	/// <summary>
 	/// Input variables
@@ -67,14 +83,18 @@ public:
 	/// <summary>
 	/// Runs the update function for physics
 	/// </summary> 
-	virtual void Tick(float DeltaTime) override; 
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
   
 	// /// <summary>
 	// /// Sets up components 
 	// /// </summary> 
 	// virtual void PostInitializeComponents() override;   
 
-
+	// Called for movement input 
+	void Move(const FInputActionValue& Value);
 	
 	/// <summary>
 	/// Getters
