@@ -88,12 +88,7 @@ protected:
 public:
 
 	// Sets default values for this pawn's properties
-	ABoatPawn();    
-  
-	// /// <summary>
-	// /// Sets up components 
-	// /// </summary> 
-	// virtual void PostInitializeComponents() override;   
+	ABoatPawn();     
 
 	// Called for movement input
 	UFUNCTION(BlueprintCallable)
