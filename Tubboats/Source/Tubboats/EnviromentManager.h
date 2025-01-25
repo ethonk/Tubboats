@@ -12,6 +12,14 @@ class TUBBOATS_API AEnviromentManager : public AActor
 	GENERATED_BODY()
 
 public:
+	/// <summary>
+	/// Exposed Components
+	/// </summary>
+		
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// class UCameraComponent* CameraComp{nullptr};
+	// UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	// class USpringArmComponent* SpringArm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UPostProcessComponent* PostProcessComp{nullptr};
 

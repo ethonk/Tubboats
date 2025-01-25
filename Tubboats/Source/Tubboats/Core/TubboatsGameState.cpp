@@ -2,6 +2,8 @@
 
 
 #include "TubboatsGameState.h"
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 
 #pragma region Core
@@ -14,11 +16,15 @@ ATubboatsGameState::ATubboatsGameState()
 void ATubboatsGameState::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PopulateSpawnLocations();
 }
 
 #pragma endregion
 
 #pragma region Game State Functions
+
+// Game State
 
 void ATubboatsGameState::EnterCurrentGameState()
 {
@@ -38,6 +44,8 @@ void ATubboatsGameState::EnterCurrentGameState()
 		GetWorldTimerManager().SetTimer(ActiveGameTimerHandle, this, &ATubboatsGameState::ExitCurrentGameState,
 			GameDuration, false);
 
+		SpawnAllPlayers();
+
 		break;
 
 	case ETubboatGameState::GameEnd:
@@ -56,20 +64,84 @@ void ATubboatsGameState::ExitCurrentGameState()
 	switch (CurrentGameState)
 	{
 	case ETubboatGameState::PreGame:
+		
 		SetCurrentGameState(ETubboatGameState::Gameplay);
 		break;
 
 	case ETubboatGameState::Gameplay:
+		
 		SetCurrentGameState(ETubboatGameState::GameEnd);
 		break;
 
 	case ETubboatGameState::GameEnd:
+		DestroyAllPlayers();
 		SetCurrentGameState(ETubboatGameState::Menu);
+		
 		break;
 		
 	default:
 		break;
 	}
+}
+
+// Players
+
+void ATubboatsGameState::SpawnAllPlayers()
+{
+	for (const FVector& Location : FoundSpawnLocations)
+	{
+		// Spawn player
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		// Catalogue Player
+		APawn* NewPlayer = GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
+		if (!NewPlayer) { continue; }
+
+		// Add to active players
+		ActivePlayers.Add(NewPlayer);
+
+		// Possess by first player controller
+		APlayerController* FirstPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (FirstPlayerController) { FirstPlayerController->Possess(NewPlayer); }
+	}
+}
+
+void ATubboatsGameState::DestroyAllPlayers()
+{
+	for (APawn* InPlayer : ActivePlayers)
+	{
+		if (!InPlayer) { continue; }
+		InPlayer->Destroy();
+	}
+}
+
+void ATubboatsGameState::PlayerDied(APawn* DyingPlayer)
+{
+	if (!DyingPlayer) { return; }
+
+	// Remove from active players
+	ActivePlayers.Remove(DyingPlayer);
+
+	// Check if one player remains
+	if (ActivePlayers.Num() <= 1 && CurrentGameState == ETubboatGameState::Gameplay)
+	{
+		SetCurrentGameState(ETubboatGameState::GameEnd);
+	}
+}
+
+#pragma endregion
+
+#pragma region Helpers
+
+void ATubboatsGameState::PopulateSpawnLocations()
+{
+	// Get all tagged actors
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), SpawnLocationsTag, FoundActors);
+
+	// Iterate, add
+	for (const AActor* Actor : FoundActors) { FoundSpawnLocations.Add(Actor->GetActorLocation()); }
 }
 
 #pragma endregion

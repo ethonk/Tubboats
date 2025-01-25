@@ -54,12 +54,28 @@ public:
 
 #pragma region Game State Functions
 
+	// Game State
+	
 	void EnterCurrentGameState();
 	
 	void ExitCurrentGameState();
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game State")
 	void BP_OnGameStateChanged(const ETubboatGameState& InState);
+
+	// Players
+
+	void SpawnAllPlayers();
+
+	void DestroyAllPlayers();
+
+	void PlayerDied(APawn* DyingPlayer);
+
+#pragma endregion
+
+#pragma region Helpers
+
+	void PopulateSpawnLocations();
 
 #pragma endregion
 	
@@ -74,7 +90,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetCurrentRemainingTime() const;
-
+	
 #pragma endregion
 	
 	//
@@ -88,6 +104,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States")
 	ETubboatGameState CurrentGameState = ETubboatGameState::Menu;
 
+	// Player
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States|Player")
+	TArray<APawn*> ActivePlayers;
+	
+	// Game Objects
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States|InGame")
+	TArray<FVector> FoundSpawnLocations;
+	
 	// Timers
 
 	UPROPERTY(Transient)
@@ -97,6 +123,18 @@ public:
 
 #pragma region Properties
 
+	// Spawning
+
+	UPROPERTY(EditDefaultsOnly, Category = "Properties|Spawning")
+	TSubclassOf<APawn> PlayerClassToSpawn = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Properties|Spawning")
+	FName SpawnLocationsTag = "PlayerSpawn";	
+
+	// Players
+
+	// TODO setup input map here
+	
 	// Timing
 
 	UPROPERTY(EditDefaultsOnly, Category = "Properties|Timing")
