@@ -19,31 +19,28 @@ ABoatPawn::ABoatPawn()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComp;
 
-	// Guard against the default object
-	if (!HasAnyFlags(RF_ClassDefaultObject))
-	{
-		MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		MeshComp->SetSimulatePhysics(false);
-	}
+	//// Guard against the default object
+	//if (!HasAnyFlags(RF_ClassDefaultObject))
+	//{
+	//	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//	MeshComp->SetSimulatePhysics(false);
+	//}
+	
+	// Check
+	MeshComp->SetSimulatePhysics(true);
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); 
+
+	// TODO: Crashes the build - MeshComp->SetMassOverrideInKg(NAME_None,50);
+	MeshComp->BodyInstance.bOverrideMass = true;
+	MeshComp->BodyInstance.SetMassOverride(50.f);
+	// TODO: Crashes the build - MeshComp->SetCenterOfMass({0,0,-15});
+	MeshComp->BodyInstance.COMNudge = {0,0,-35};
 }
 
 // Called when the game starts or when spawned
 void ABoatPawn::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// TODO Late Physics Setup
-	if (MeshComp)
-	{
-		MeshComp->SetSimulatePhysics(true);
-		MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); 
-
-		// TODO: Crashes the build - MeshComp->SetMassOverrideInKg(NAME_None,50);
-		MeshComp->BodyInstance.bOverrideMass = true;
-		MeshComp->BodyInstance.SetMassOverride(50.f);
-		// TODO: Crashes the build - MeshComp->SetCenterOfMass({0,0,-15});
-		MeshComp->BodyInstance.COMNudge = {0,0,-35};
-	}
 		
 	// Get the PlayerController and add the input mapping context
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
