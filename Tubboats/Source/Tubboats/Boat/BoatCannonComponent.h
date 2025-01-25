@@ -22,6 +22,18 @@ public:
 
 #pragma endregion
 
+#pragma region Firing
+
+	void FireAt(const FVector& FireLocation);
+
+	UFUNCTION(BlueprintCallable)
+	void FireLeft();
+
+	UFUNCTION(BlueprintCallable)
+	void FireRight();
+
+#pragma endregion
+	
 	//
 	//
 	//
