@@ -97,6 +97,8 @@ void UBoatCannonComponent::ResetFire()
 
 #pragma endregion
 
+
+
 #pragma region Setters
 
 void UBoatCannonComponent::SetAmmo(const int32 NewAmmo)
