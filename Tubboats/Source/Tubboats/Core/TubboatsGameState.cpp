@@ -2,6 +2,8 @@
 
 
 #include "TubboatsGameState.h"
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 
 #pragma region Core
@@ -14,11 +16,15 @@ ATubboatsGameState::ATubboatsGameState()
 void ATubboatsGameState::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PopulateSpawnLocations();
 }
 
 #pragma endregion
 
 #pragma region Game State Functions
+
+// Game State
 
 void ATubboatsGameState::EnterCurrentGameState()
 {
@@ -37,6 +43,8 @@ void ATubboatsGameState::EnterCurrentGameState()
 	case ETubboatGameState::Gameplay:
 		GetWorldTimerManager().SetTimer(ActiveGameTimerHandle, this, &ATubboatsGameState::ExitCurrentGameState,
 			GameDuration, false);
+
+		SpawnAllPlayers();
 
 		break;
 
@@ -70,6 +78,33 @@ void ATubboatsGameState::ExitCurrentGameState()
 	default:
 		break;
 	}
+}
+
+// Players
+
+void ATubboatsGameState::SpawnAllPlayers()
+{
+	for (const FVector& Location : FoundSpawnLocations)
+	{
+		// Spawn player
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		GetWorld()->SpawnActor<ACharacter>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
+	}
+}
+
+#pragma endregion
+
+#pragma region Helpers
+
+void ATubboatsGameState::PopulateSpawnLocations()
+{
+	// Get all tagged actors
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), SpawnLocationsTag, FoundActors);
+
+	// Iterate, add
+	for (const AActor* Actor : FoundActors) { FoundSpawnLocations.Add(Actor->GetActorLocation()); }
 }
 
 #pragma endregion
