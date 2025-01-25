@@ -117,7 +117,7 @@ public:
 	// Spawning
 
 	UPROPERTY(EditDefaultsOnly, Category = "Properties|Spawning")
-	TSubclassOf<ACharacter> PlayerClassToSpawn = nullptr;
+	TSubclassOf<APawn> PlayerClassToSpawn = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Properties|Spawning")
 	FName SpawnLocationsTag = "PlayerSpawn";	
