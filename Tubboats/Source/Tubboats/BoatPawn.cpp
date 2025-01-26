@@ -78,10 +78,10 @@ void ABoatPawn::Move(const FVector2D& Value)
 	
 	// Brake
 	FVector BrakeForce = FVector::ZeroVector;
-	if ((fInputAxisForward < 0 && fSpeed > 0) ^ (fInputAxisForward > 0 &&  fSpeed < 0 )) BrakeForce = (vWorldVelocity * -1) * 1000;  
+	if ((fInputAxisForward < 0 && fSpeed > 0) ^ (fInputAxisForward > 0 &&  fSpeed < 0 )) BrakeForce = (vWorldVelocity * -1) * 100;  
 	
 	// Acceleration
-	float AccelerationConst = fInputAxisForward > 0 ? fBaseAcceleration : 50000;
+	float AccelerationConst = fInputAxisForward > 0 ? fBaseAcceleration : 60000;
 	FVector vForceLocation =  GetActorLocation() + FVector(0,0,-5) + GetActorForwardVector() * 10; 
 	MeshComp->AddForceAtLocation(GetActorForwardVector() * AccelerationConst * fInputAxisForward + BrakeForce, vForceLocation );
 
