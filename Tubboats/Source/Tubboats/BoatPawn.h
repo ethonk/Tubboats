@@ -69,7 +69,7 @@ public:
 	float fSpeed{0};
 
 	UPROPERTY(VisibleAnywhere)
-	float fBaseAcceleration{60000};
+	float fBaseAcceleration{200000};
 
 	// /// <summary>
 	// /// Normalised speed of the vehicle
