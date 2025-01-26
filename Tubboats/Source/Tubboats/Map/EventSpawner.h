@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
+#include "Tubboats/Events/EventBase.h"
 #include "EventSpawner.generated.h"
 
 UCLASS()
@@ -59,8 +60,8 @@ public:
 
 	// Spawning
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States|Spawning")
-	//TArray<APickupBase*> SpawnedPickups;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States|Spawning")
+	TArray<AEventBase*> ActiveEvents;
 	
 	// Timer Handle
 	
@@ -73,8 +74,8 @@ public:
 
 	// Spawning
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Spawning")
-	//TArray<TSubclassOf<APickupBase>> SpawnablePickups;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Spawning")
+	TArray<TSubclassOf<AEventBase>> SpawnableEvents;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Spawning")
 	float SpawnDelay = 20.f;
