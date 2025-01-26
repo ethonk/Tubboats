@@ -140,7 +140,8 @@ public:
 
 	// Players
 
-	// TODO setup input map here
+	UPROPERTY(EditDefaultsOnly, Category = "Properties|Players")
+	TArray<UMaterialInterface*> PlayerIndexMaterials;
 	
 	// Timing
 
@@ -154,7 +155,7 @@ public:
 	float GameEndDuration = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UNiagaraSystem* DeathEffect;
+	class UNiagaraSystem* DeathEffect = nullptr;
 
 #pragma endregion
 	
