@@ -33,6 +33,15 @@ void UBubbleHealthComponent::BeginPlay()
 
 void UBubbleHealthComponent::BubbleActivityChanged(const bool bLastWasActive)
 {
+	// Get bubble count
+	int32 ActiveBubbleCount = 0;
+	for (const APlayerBubble* Bubble : PlayerBubbles) { if (Bubble->bActivated) { ++ActiveBubbleCount; } }
+	
+	// Broadcast event
+	BP_BubbleCountChanged(ActiveBubbleCount);
+	
+	// Below, only check for game over.
+	
 	if (bLastWasActive) { return; }
 
 	// Check if all bubbles are popped

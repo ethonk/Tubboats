@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Bubble Management")
 	void BP_AllBubblesPopped();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Bubble Management")
+	void BP_BubbleCountChanged(const int32& ActiveBubbleCount);
+	
 #pragma endregion
 
 	//
