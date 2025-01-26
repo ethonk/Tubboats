@@ -4,6 +4,8 @@
 #include "TubboatsGameState.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Tubboats/BoatPawn.h"
 
 
@@ -53,8 +55,6 @@ void ATubboatsGameState::EnterCurrentGameState()
 		GetWorldTimerManager().SetTimer(ActiveGameTimerHandle, this, &ATubboatsGameState::ExitCurrentGameState,
 			GameEndDuration, false);
 
-		KillAllPlayersIfNoWinner();
-		
 		break;
 		
 	default:
@@ -91,15 +91,14 @@ void ATubboatsGameState::ExitCurrentGameState()
 
 void ATubboatsGameState::SpawnAllPlayers()
 {
-	// Iterate Map
-	for (const TPair<FVector, FRotator>& SpawnLocation : FoundSpawnLocations)
+	for (const FVector& Location : FoundSpawnLocations)
 	{
 		// Spawn player
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		// Catalogue Player
-		APawn* NewPlayer = GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, SpawnLocation.Key, SpawnLocation.Value, SpawnParams);
+		APawn* NewPlayer = GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
 		if (!NewPlayer) { continue; }
 
 		// Set index of Boat Pawn
@@ -130,25 +129,24 @@ void ATubboatsGameState::PlayerDied(APawn* DyingPlayer)
 	// Do a funny (add random impulse to player pawn mostly going high)
 	if (const ABoatPawn* DyingBoat = Cast<ABoatPawn>(DyingPlayer))
 	{
-		DyingBoat->MeshComp->AddImpulse(FVector(0.f, 0.f, 13000.f), NAME_None, true);
+		if(DeathEffect) {
+			// Spawn the Niagara effect at the specified location and rotation
+			UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				this,  // World context
+				DeathEffect,
+				DyingBoat->GetActorLocation(),
+				DyingBoat->GetActorRotation(),
+				FVector(1.0f)  // Scale
+			);
+		}
+		
+		DyingBoat->MeshComp->AddImpulse(FVector(0.f, 0.f, 7000.f), NAME_None, true);
 	}
 
 	// Check if one player remains
 	if (ActivePlayers.Num() <= 1 && CurrentGameState == ETubboatGameState::Gameplay)
 	{
 		SetCurrentGameState(ETubboatGameState::GameEnd);
-	}
-}
-
-void ATubboatsGameState::KillAllPlayersIfNoWinner()
-{
-	// Check if one player remains
-	if (ActivePlayers.Num() <= 1) { return; }
-
-	// Kill all (backwards iteration)
-	for (int32 i = ActivePlayers.Num() - 1; i >= 0; --i)
-	{
-		if (ActivePlayers.IsValidIndex(i)) { PlayerDied(ActivePlayers[i]); }
 	}
 }
 
@@ -163,16 +161,7 @@ void ATubboatsGameState::PopulateSpawnLocations()
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), SpawnLocationsTag, FoundActors);
 
 	// Iterate, add
-	for (AActor* Actor : FoundActors)
-	{
-		// Only take yaw rotation
-		FRotator NewRot = Actor->GetActorRotation();
-		NewRot.Pitch = 0.f;
-		NewRot.Roll = 0.f;
-
-		// Add to map
-		FoundSpawnLocations.Add(Actor->GetActorLocation(), NewRot);
-	}
+	for (const AActor* Actor : FoundActors) { FoundSpawnLocations.Add(Actor->GetActorLocation()); }
 }
 
 #pragma endregion
