@@ -157,6 +157,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UNiagaraSystem* DeathEffect = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	USoundBase* SoundToPlay;
+
 #pragma endregion
 	
 };

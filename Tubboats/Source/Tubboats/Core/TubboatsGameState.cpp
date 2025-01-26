@@ -2,6 +2,8 @@
 
 
 #include "TubboatsGameState.h"
+
+#include "NiagaraFunctionLibrary.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Tubboats/BoatPawn.h"
@@ -139,8 +141,26 @@ void ATubboatsGameState::PlayerDied(APawn* DyingPlayer)
 	// Do a funny (add random impulse to player pawn mostly going high)
 	if (const ABoatPawn* DyingBoat = Cast<ABoatPawn>(DyingPlayer))
 	{
+		if (SoundToPlay)
+		{
+			UGameplayStatics::PlaySound2D(this, SoundToPlay);
+		}
+
+		if(DeathEffect) {
+			// Spawn the Niagara effect at the specified location and rotation
+			UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				this,  // World context
+				DeathEffect,
+				DyingBoat->GetActorLocation(),
+				DyingBoat->GetActorRotation(),
+				FVector(1.0f)  // Scale
+			);
+		}
+		
 		DyingBoat->MeshComp->AddImpulse(FVector(0.f, 0.f, 13000.f), NAME_None, true);
 	}
+
+
 
 	// Check if one player remains
 	if (ActivePlayers.Num() <= 1 && CurrentGameState == ETubboatGameState::Gameplay)
