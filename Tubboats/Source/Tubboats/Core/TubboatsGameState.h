@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/GameStateBase.h"
 #include "../TubboatsGameplayTags.h"
+
 #include "TubboatsGameState.generated.h"
 
 
@@ -75,6 +76,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayerDied(APawn* DyingPlayer);
 
+	void KillAllPlayersIfNoWinner();
+
 #pragma endregion
 
 #pragma region Helpers
@@ -116,7 +119,7 @@ public:
 	// Game Objects
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States|InGame")
-	TArray<FVector> FoundSpawnLocations;
+	TMap<FVector, FRotator> FoundSpawnLocations;
 	
 	// Timers
 
@@ -149,6 +152,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Properties|Timing")
 	float GameEndDuration = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraSystem* DeathEffect;
 
 #pragma endregion
 	

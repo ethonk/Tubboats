@@ -53,6 +53,8 @@ void ATubboatsGameState::EnterCurrentGameState()
 		GetWorldTimerManager().SetTimer(ActiveGameTimerHandle, this, &ATubboatsGameState::ExitCurrentGameState,
 			GameEndDuration, false);
 
+		KillAllPlayersIfNoWinner();
+		
 		break;
 		
 	default:
@@ -89,14 +91,15 @@ void ATubboatsGameState::ExitCurrentGameState()
 
 void ATubboatsGameState::SpawnAllPlayers()
 {
-	for (const FVector& Location : FoundSpawnLocations)
+	// Iterate Map
+	for (const TPair<FVector, FRotator>& SpawnLocation : FoundSpawnLocations)
 	{
 		// Spawn player
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		// Catalogue Player
-		APawn* NewPlayer = GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, Location, FRotator::ZeroRotator, SpawnParams);
+		APawn* NewPlayer = GetWorld()->SpawnActor<APawn>(PlayerClassToSpawn, SpawnLocation.Key, SpawnLocation.Value, SpawnParams);
 		if (!NewPlayer) { continue; }
 
 		// Set index of Boat Pawn
@@ -127,13 +130,25 @@ void ATubboatsGameState::PlayerDied(APawn* DyingPlayer)
 	// Do a funny (add random impulse to player pawn mostly going high)
 	if (const ABoatPawn* DyingBoat = Cast<ABoatPawn>(DyingPlayer))
 	{
-		DyingBoat->MeshComp->AddImpulse(FVector(0.f, 0.f, 7000.f), NAME_None, true);
+		DyingBoat->MeshComp->AddImpulse(FVector(0.f, 0.f, 13000.f), NAME_None, true);
 	}
 
 	// Check if one player remains
 	if (ActivePlayers.Num() <= 1 && CurrentGameState == ETubboatGameState::Gameplay)
 	{
 		SetCurrentGameState(ETubboatGameState::GameEnd);
+	}
+}
+
+void ATubboatsGameState::KillAllPlayersIfNoWinner()
+{
+	// Check if one player remains
+	if (ActivePlayers.Num() <= 1) { return; }
+
+	// Kill all (backwards iteration)
+	for (int32 i = ActivePlayers.Num() - 1; i >= 0; --i)
+	{
+		if (ActivePlayers.IsValidIndex(i)) { PlayerDied(ActivePlayers[i]); }
 	}
 }
 
@@ -147,7 +162,7 @@ void ATubboatsGameState::PopulateSpawnLocations()
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), SpawnLocationsTag, FoundActors);
 
-	// Iterate, add
+	// Iterate, add as map
 	for (const AActor* Actor : FoundActors) { FoundSpawnLocations.Add(Actor->GetActorLocation()); }
 }
 
