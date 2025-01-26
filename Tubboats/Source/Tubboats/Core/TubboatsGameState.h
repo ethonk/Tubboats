@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/GameStateBase.h"
 #include "../TubboatsGameplayTags.h"
+
 #include "TubboatsGameState.generated.h"
 
 
@@ -149,6 +150,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Properties|Timing")
 	float GameEndDuration = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraSystem* DeathEffect;
 
 #pragma endregion
 	
