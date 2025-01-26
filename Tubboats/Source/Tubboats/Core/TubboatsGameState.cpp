@@ -107,6 +107,15 @@ void ATubboatsGameState::SpawnAllPlayers()
 		
 		// Add to active players
 		ActivePlayers.Add(NewPlayer);
+
+		// Set material by index
+		if (ActivePlayers.IsValidIndex(ActivePlayers.Num() - 1))
+		{
+			if (const ABoatPawn* NewBoat = Cast<ABoatPawn>(ActivePlayers[ActivePlayers.Num() - 1]))
+			{
+				NewBoat->MeshComp->SetMaterial(0, PlayerIndexMaterials[ActivePlayers.Num() - 1]);
+			}
+		}
 	}
 }
 
