@@ -162,7 +162,7 @@ void ATubboatsGameState::PopulateSpawnLocations()
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), SpawnLocationsTag, FoundActors);
 
-	// Iterate, add
+	// Iterate, add as map
 	for (AActor* Actor : FoundActors)
 	{
 		// Only take yaw rotation
