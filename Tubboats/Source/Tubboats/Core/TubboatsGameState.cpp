@@ -163,16 +163,7 @@ void ATubboatsGameState::PopulateSpawnLocations()
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), SpawnLocationsTag, FoundActors);
 
 	// Iterate, add as map
-	for (AActor* Actor : FoundActors)
-	{
-		// Only take yaw rotation
-		FRotator NewRot = Actor->GetActorRotation();
-		NewRot.Pitch = 0.f;
-		NewRot.Roll = 0.f;
-
-		// Add to map
-		FoundSpawnLocations.Add(Actor->GetActorLocation(), NewRot);
-	}
+	for (const AActor* Actor : FoundActors) { FoundSpawnLocations.Add(Actor->GetActorLocation()); }
 }
 
 #pragma endregion

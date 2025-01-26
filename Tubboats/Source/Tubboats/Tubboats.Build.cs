@@ -13,6 +13,7 @@ public class Tubboats : ModuleRules
 			"Core", 
 			"CoreUObject", 
 			"Engine",  
+			"Niagara",
 			"EnhancedInput",
 			"InputCore",
 			"GameplayTags",
