@@ -2,7 +2,6 @@
 
 
 #include "../Pickups/PickupBase.h"
-
 #include "Tubboats/BoatPawn.h"
 
 
@@ -62,6 +61,17 @@ void APickupBase::OnPickupOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	// Call Collision
 	BP_OnPickup(BoatPawn);
 
+	// Try spawn Niagara effect
+	if (VFXOnPickup && BoatPawn->MeshComp)
+	{
+		if (UNiagaraComponent* SpawnedSystem = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), VFXOnPickup,
+			BoatPawn->MeshComp->GetComponentLocation() + VFXSpawnOffset); SpawnedSystem && bVFXAttachToBoat)
+		{
+			// this doesn't work?
+			SpawnedSystem->AttachToComponent(BoatPawn->MeshComp, FAttachmentTransformRules::KeepRelativeTransform);
+		}
+	}
+	
 	// Destroy
 	Destroy();
 }

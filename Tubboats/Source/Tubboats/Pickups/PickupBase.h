@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "PickupBase.generated.h"
 
 class ABoatPawn;
@@ -77,6 +79,17 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|Spawning")
 	float DespawnDelay = 13.f;
+
+	// VFX
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|VFX")
+	UNiagaraSystem* VFXOnPickup = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|VFX")
+	FVector VFXSpawnOffset = FVector(0.f, 0.f, 150.f);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties|VFX")
+	bool bVFXAttachToBoat = true;
 
 #pragma endregion
 
