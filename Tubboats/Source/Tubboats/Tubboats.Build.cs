@@ -16,7 +16,8 @@ public class Tubboats : ModuleRules
 			"Niagara",
 			"EnhancedInput",
 			"InputCore",
-			"GameplayTags"
+			"GameplayTags",
+			"Niagara",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
