@@ -75,6 +75,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayerDied(APawn* DyingPlayer);
 
+	void KillAllPlayersIfNoWinner();
+
 #pragma endregion
 
 #pragma region Helpers
@@ -116,7 +118,7 @@ public:
 	// Game Objects
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States|InGame")
-	TArray<FVector> FoundSpawnLocations;
+	TMap<FVector, FRotator> FoundSpawnLocations;
 	
 	// Timers
 
